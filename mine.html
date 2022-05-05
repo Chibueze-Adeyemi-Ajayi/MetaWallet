@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="icon" type="image/x-jpg" href="assets/img/ethereum-icon.png">
+        <meta name="description" content="A decentralized app for sending JILO ERC20">
+        <meta name="author" content="Ajayi Chibueze Adeyemi, Blockchain dev">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="assets/css/et-lineicon.css" />
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <meta name="keyword" content="Ethereum, blockchain, web3.0, JILO, DEX, DeFi, ERC20">
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,500,400italic,500italic,700' rel='stylesheet' type='text/css'>
+        <title>JILO Wallet</title>
+    </head>
+    <body>
+
+    <div class="container">
+      <div id="-form-">
+        <img src="assets/img/ethereum-icon.png" class="logo">
+        <div class="message">
+          <h2>MetaWallet <img id="loader" src="assets/img/loading.gif"></h2>
+          <div style="text-align: left; margin:auto;width:300px">
+            <p class="detail"><i class="fa fa-user"></i> <b>Address</b>: <span style="overflow-x:auto;width:300px;" id="wallet">0x000000000000000000</span></p>
+            <p class="detail"><i class="fa fa-btc"></i> <b>Balance</b>: <span style="overflow-x:auto;width:300px;" id="balance">0.00000000000000</span> JILO</p>  
+          </div>
+        </div>
+        <div id="msg"></div>
+        <br><br>
+        <button id="mine_btn">Mine JILO</button><br>
+    </div><br><br>
+
+    <footer><a href="wallet.html">My Wallet</a> &emsp; <br><br>
+        &copy; <script>
+               
+                 var year = new Date().getFullYear();
+
+                  document.write(year)
+            
+            </script> Jilo Innovations &emsp;&emsp; 
+    </footer>
+
+    </body>
+    <script src="assets/js/jquery-3.5.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.5.2/ethers.umd.min.js" type="application/javascript"></script>
+    <script src="assets/js/index.js" type="module"></script>
+    <script>
+
+    var tweet = null;
+     
+    $("#mine_btn").click(() => {
+        if (tweet != null) {
+          $("#msg").html(`<div class='alert alert-danger'>
+             Please try again - refresh if this persists
+            </div>`);
+          return;
+        }
+
+        $("#msg").html(`<div class='alert alert-success'>
+             A tweet has just been copied to your clipboard<br>
+            <ul> 
+             <li>Kindly open your &ensp;<a href='https://www.twitter.com'><b><i class='fa fa-twitter'></i>&nbsp;Twitter</b></a> &nbsp; account</li> 
+             <li>Click on Tweet and paste the already copied content</li>
+             <li>Tweet the post and sit back to see your <a href='wallet.html'><b>wallet</b></a> credited with 1,500 JILO shortly</li>
+            </ul><br>
+            Thank you. 
+            <b style='float:right'>MetaWallet</b>
+            </div>`);
+
+        navigator.clipboard.writeText(tweet);
+    });
+
+    //Application Binary Interface ABI
+
+    const abi = [
+      "function totalSupply() external view returns (uint256)",
+      "function balanceOf(address account) external view returns (uint256)",
+      "function allowance(address owner, address spender) external view returns (uint256)",
+      "function transfer(address recipient, uint256 amount) external returns (bool)",
+      "function approve(address spender, uint256 amount) external returns (bool)",
+      "function transferFrom(address sender, address recipient, uint256 amount) external returns (bool)",
+      "event Transfer(address indexed from, address indexed to, uint256 value)",
+      "event Approval(address indexed owner, address indexed spender, uint256 value)"
+    ];
+
+	//self invoke async await JS method
+	(async () =>
+    {
+
+      //connecting to web3 provider
+      const provider = ethers.getDefaultProvider('rinkeby', {etherscan:"3WKBC35KHBKE4TGCH4M9PC8GHCN5BJ7MYT"});
+
+      //communicating with backend algorithm to get existing wallet 
+      $.post("assets/php/backend.php", {"wallet_request" : true}, async (res, req) =>
+      {
+
+         //parsing backend AJAX response
+         const data = JSON.parse(res);
+
+         if (!data.status) {
+           window.location = "index.html";
+           $("$msg").html(`<div class="alert alert-danger">
+              `+ data.message +`
+            </div>`);
+            return;
+         };
+
+         //creating wallet object
+         const wallet = await new ethers.Wallet(data.message, provider);
+         const wallet_address = await wallet.getAddress();
+ 
+         $("#wallet").html(wallet_address);
+         console.log(wallet_address);
+
+         //smartcontract address on rinkeby.etherscan.io
+         const contract_address = "0x1f697f8d823e68b48b83d158b318e87aedf72a66";
+
+         //connecting to smart contract
+         const smart_contract = await new ethers.Contract(contract_address, abi, wallet);
+         var token_balance = await smart_contract.balanceOf(wallet_address);
+         //getting and formating token balance for imported wallet address
+         token_balance = ethers.utils.formatEther(token_balance);
+
+         $("#balance").html(token_balance);
+
+         console.log(token_balance);
+
+         //clearing up the screen
+         $("#loader").fadeToggle();
+         $("#load").fadeToggle();
+         
+         //creating tweet
+         tweet = `https://www.twitter.com/jilodeveloper/`;
+         tweet += `
+         #web3community, @jilodeveloper just developed a #crypto #token #jilo
+         and an #ethereum #blockchain #wallet #MetaWallet. visit https://metawallet.jilo.com.ng 
+         #`+ wallet_address +` #DApp #Web3 #javascript #erc20 #jilo
+         @elonmusk @ethereum @blockchain
+         `;
+
+      });
+
+    })();
+
+    </script>
+    
+</html>

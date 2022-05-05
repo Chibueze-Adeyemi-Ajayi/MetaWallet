@@ -1,0 +1,175 @@
+html, body {
+    width:100%; height: 100%;
+    background-color: #fff;
+    padding-bottom: 10px;
+    overflow-x: hidden;
+}
+
+body {
+    width: 100%; height:100%; background-color: transparent;
+}
+
+footer {
+    text-align: center;
+}
+
+.detail {
+    font-size: 13px; width:400px; 
+}
+
+#msg- {
+    overflow-x: auto;
+}
+
+/*desktop*/
+@media screen and (min-width:  1000px) {
+
+    html {
+        background-size: 330%; background-repeat:no-repeat;
+        width: 100%; height: 100%;
+     }
+     #-form- {
+         width: 100%; height: 100%; 
+      }
+  
+      .logo {
+          display: block; margin:120px auto; width: 100px; height: 150px;
+          margin-bottom: 10px;
+      }
+  
+      #-form- > .message h2 {
+          text-align: center;
+      }
+  
+      #-form- > .message {
+          width:100%; height:100px;
+      }
+  
+      #-form- > button {
+          display: block; margin: auto; background-color: grey; border:0px;
+          color:#000; font-weight: bold; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+          width:400px; height: 45px; border-radius: 20px; cursor: pointer;
+      }
+  
+      #-form- > button:hover {
+          background-color: #fff; border:2px solid grey;
+          color:grey;
+      }
+
+      .private-key {
+        display: block; margin: auto; background-color: #fff; border:1px solid grey;
+        color:grey; font-weight: bold; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        width:400px; height: 100px; border-radius: 5px; cursor: pointer; font-weight: bold;
+        text-align: center; margin-bottom: 25px;
+      }
+
+      .input-{
+        width:400px; height: 40px; border:1px solid grey; border-radius: 8px;
+        font-weight: bold; display: block; margin: 10px auto; padding-left: 8px;
+      }
+
+ }
+
+/*tablet*/
+@media screen and (max-width:  1000px) {
+
+    html {
+        background-size: 330%; background-repeat:no-repeat;
+        width: 100%; height: 100%;
+     }
+     #-form- {
+         width: 100%; height: 100%; 
+      }
+  
+      .logo {
+          display: block; margin:35% auto; width: 100px; height: 150px;
+          margin-bottom: 10px;
+      }
+  
+      #-form- > .message h2 {
+          text-align: center;
+      }
+  
+      #-form- > .message {
+          width:100%; height:100px;
+      }
+  
+      #-form- > button {
+          display: block; margin: auto; background-color: grey; border:0px;
+          color:#000; font-weight: bold; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+          width:80%; height: 40px; border-radius: 20px; cursor: pointer;
+      }
+  
+      #-form- > button:hover{
+          background-color: #fff; border:2px solid grey;
+          color:grey;
+      }
+
+      
+      .private-key {
+        display: block; margin: auto; background-color: #fff; border:1px solid grey;
+        color:grey; font-weight: bold; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        width:400px; height: 100px; border-radius: 5px; cursor: pointer; font-weight: bold;
+        text-align: center; margin-bottom: 25px;
+      }
+
+      
+      .input-{
+        width:400px; height: 40px; border:1px solid grey; border-radius: 8px;
+        font-weight: bold; display: block; margin: 10px auto; padding-left: 8px;
+      }
+
+
+}
+ 
+/*mobile*/
+@media screen and (max-width:  600px) {
+
+    html {
+       background-size: 330%; background-repeat:no-repeat;
+       width: 100%; height: 100%;
+    }
+    #-form- {
+        width: 100%; height: 100%; 
+     }
+ 
+     .logo {
+         display: block; margin:35% auto; width: 100px; height: 150px;
+         margin-bottom: 10px;
+     }
+ 
+     #-form- > .message h2 {
+         text-align: center;
+     }
+ 
+     #-form- > .message {
+         width:100%; height:100px;
+     }
+ 
+     #-form- > button {
+         display: block; margin: auto; background-color: grey; border:0px;
+         color:#000; font-weight: bold; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+         width:80%; height: 40px; border-radius: 20px; cursor: pointer;
+     }
+ 
+     #-form- > button:hover{
+         background-color: #fff; border:2px solid grey;
+         color:grey;
+     }
+
+     
+     .private-key {
+        display: block; margin: auto; background-color: #fff; border:1px solid grey;
+        color:grey; font-weight: bold; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        width:300px; height: 100px; border-radius: 5px; cursor: pointer; font-weight: bold;
+        text-align: center; margin-bottom: 25px;
+      }
+
+      
+      .input-{
+        width:300px; height: 40px; border:1px solid grey; border-radius: 8px;
+        font-weight: bold; display: block; margin: 10px auto; padding-left: 8px;
+      }
+
+
+}

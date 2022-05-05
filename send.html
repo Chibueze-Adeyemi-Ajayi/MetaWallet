@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="icon" type="image/x-jpg" href="assets/img/ethereum-icon.png">
+        <meta name="description" content="A decentralized app for sending JILO ERC20">
+        <meta name="author" content="Ajayi Chibueze Adeyemi, Blockchain dev">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="assets/css/et-lineicon.css" />
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <meta name="keyword" content="Ethereum, blockchain, web3.0, JILO, DEX, DeFi, ERC20">
+        <link href='http://fonts.googleapis.com/css?family=Roboto:400,500,400italic,500italic,700' rel='stylesheet' type='text/css'>
+        <title>JILO Wallet</title>
+    </head>
+    <body>
+
+    <div class="container">
+      <div id="-form-">
+        <img src="assets/img/ethereum-icon.png" class="logo">
+        <div class="message">
+          <h2>MetaWallet <img id="loader" src="assets/img/loading.gif"> </h2>
+          <div style="text-align: left; margin:auto;width:300px">
+            <p class="detail"><i class="fa fa-btc"></i> <b>Balance</b>: <span style="overflow-x:auto;width:300px;" id="balance">0.00000000000000</span> JILO</p>
+          </div>
+          <div id="msg"></div>
+        </div>
+        <br><br>
+        <input class="input-" type="text" id="wallet-add" placeholder="Wallet Address"/>
+        <input class="input-" type="text" id="jilo-amt" placeholder="Amount of JILO"/><br>
+        <button onclick="sendJILO()" >Send JILO</button>
+    </div><br><br>
+    
+    <footer><a href="wallet.html">My Wallet</a> &emsp; <br><br>
+        &copy; <script>
+               
+                 var year = new Date().getFullYear();
+
+                  document.write(year)
+            
+            </script> Jilo Innovations &emsp;&emsp; <span class="detail">
+              
+    </footer>
+
+    </body>
+    <script src="assets/js/jquery-3.5.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.5.2/ethers.umd.min.js" type="application/javascript"></script>
+    <script src="assets/js/index.js" type="module"></script>
+    <script>
+
+      var wallet_address = null, smart_contract = null, wallet = null;
+
+      //connecting to smart contract
+
+      //contract address on rinkeby.etherscan.io
+      const contract_address = "0x1f697f8d823e68b48b83d158b318e87aedf72a66";
+  
+      //contract Application Binary Interface
+      const abi = [
+      "function totalSupply() external view returns (uint256)",
+      "function balanceOf(address account) external view returns (uint256)",
+      "function allowance(address owner, address spender) external view returns (uint256)",
+      "function transfer(address recipient, uint256 amount) external returns (bool)",
+      "function approve(address spender, uint256 amount) external returns (bool)",
+      "function transferFrom(address sender, address recipient, uint256 amount) external returns (bool)",
+      "event Transfer(address indexed from, address indexed to, uint256 value)",
+      "event Approval(address indexed owner, address indexed spender, uint256 value)"
+      ];
+
+      //auto invoking async function
+      (async () =>
+      {
+  
+        //connecting to a web3 provider i.e Ethereum blockchain (Etherscan)
+        const provider = ethers.getDefaultProvider('rinkeby', {etherscan:"3WKBC35KHBKE4TGCH4M9PC8GHCN5BJ7MYT"});
+  
+        //fetching private key from backend secretive algorithm
+        $.post("assets/php/backend.php", {"wallet_request" : true}, async (res, req) =>
+        {
+   
+           //parsing response data from backend
+           const data = JSON.parse(res);
+  
+          //checking data status
+           if (!data.status) {
+             window.location = "index.html";
+             $("$msg").html(`<div class="alert alert-danger">
+                `+ data.message +`
+              </div>`);
+              return;
+           };
+
+           //creating an ethereum wallet object
+           wallet = await new ethers.Wallet(data.message, provider);
+           wallet_address = await wallet.getAddress();
+   
+           //$("#wallet").html(wallet_address);
+           console.log(wallet_address);
+
+           //connecting to the smartcontract
+           smart_contract = await new ethers.Contract(contract_address, abi, wallet);
+           var token_balance = await smart_contract.balanceOf(wallet_address);
+  
+           //fetching token balance for JILO
+           token_balance = ethers.utils.formatEther(token_balance);
+  
+           $("#balance").html(token_balance);
+  
+           console.log(token_balance);
+  
+           $("#loader").fadeToggle();
+  
+        });
+  
+      })();
+  
+  </script>
+  <script>
+
+    //asynchronized method for sending JILO token
+    const sendJILO = async () =>
+    {
+
+      alert("Save your Coin for a little while friend, kindly tell the person to mine instead")
+      return;
+
+      $("#msg").html(`<div class='alert alert-success'>
+        <img src='assets/img/loading.gif'> Requesting for permission ...
+        </div>`);
+       
+      const wallet_add = $("#wallet-add").val(),
+            jilo_amt = $("#jilo-amt").val(); //alert(wallet_add + " " + jilo_amt)
+
+      try {
+
+        //smart contract overrides
+        const overrides = {
+            // The maximum units of gas for the transaction to use
+            gasLimit: 230000,
+            // The price (in wei) per unit of gas
+            gasPrice: ethers.utils.parseUnits('0.9', 'gwei'),
+        };
+
+        //checking permission from wallet owner
+        const permission = await smart_contract.functions.approve(wallet_add, jilo_amt);
+        
+        if (!permission) {
+          $("#msg").html(`<div class="alert alert-danger">Permission for transaction denied</div>`);
+          return;
+        } else $("#msg").html(`<div class="alert alert-success"><b>Permission granted</b><br><img src='assets/img/loading.gif'> Processing transaction ....</div>`);
+        
+        //transferring JILO to another wallet, once permission is being granted
+        const tx = await smart_contract.functions.transferFrom(wallet_address, wallet_add, ethers.utils.parseEther(jilo_amt), overrides);
+        
+        //signing the transaction on the ethereum blockchain
+        await tx.wait();
+
+        console.log(tx);
+
+        $("#msg").html(`<div class="alert alert-success">JILO successfully sent </div>`);
+        
+        //getting the user's remaining wallet balance for JILO token
+        var token_balance = await smart_contract.balanceOf(wallet_address);
+  
+        token_balance = ethers.utils.formatEther(token_balance);
+
+        $("#balance").html(token_balance);
+
+      } catch (err) {
+         $("#msg").html(`<div class="alert alert-danger">Unable to send. <br> `+err+`</div>`)
+      }
+
+    }
+
+  </script>
+</html>
