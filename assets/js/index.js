@@ -4,7 +4,6 @@ import 'https://cdn.skypack.dev/@officient/regenerator-runtime';
 //application constants
 const CONTRACT_ADDRESS = "0x1f697f8d823e68b48b83d158b318e87aedf72a66";
 const provider = ethers.getDefaultProvider('rinkeby', {etherscan:"3WKBC35KHBKE4TGCH4M9PC8GHCN5BJ7MYT"});
-//4a05346a7bf7f6f02f88b2f7dd2f5452caebb3de9cfc1a73fc5d64dc5f3f718b
 
 //new wallet method
 const new_wallet = async () =>
